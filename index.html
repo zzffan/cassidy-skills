@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBSCURA — 纪录片</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-deep: #0c0c0c;
+      --bg-surface: #141414;
+      --bg-elevated: #1c1c1c;
+      --text-warm: #e8e2d9;
+      --text-muted: #7a756d;
+      --text-dim: #4a4640;
+      --accent-rust: #c4523a;
+      --accent-gold: #c9a227;
+      --border-subtle: rgba(232, 226, 217, 0.08);
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-warm);
+      font-family: 'Instrument Sans', -apple-system, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Film grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, var(--bg-deep) 0%, transparent 100%);
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-warm);
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--accent-rust);
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 40px;
+    }
+
+    .header-nav a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .header-nav a:hover {
+      color: var(--text-warm);
+    }
+
+    /* Hero - Asymmetric editorial */
+    .hero {
+      min-height: 100vh;
+      padding: 160px 48px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .hero-text {
+      padding-bottom: 40px;
+    }
+
+    .hero-issue {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-rust);
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--text-warm);
+      margin-bottom: 32px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent-gold);
+    }
+
+    .hero-desc {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 420px;
+      margin-bottom: 48px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-meta span::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--text-dim);
+    }
+
+    .hero-visual {
+      position: relative;
+      aspect-ratio: 3/4;
+      background: var(--bg-surface);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .hero-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(196, 82, 58, 0.1) 0%, transparent 50%);
+    }
+
+    .hero-visual-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+
+    .hero-visual-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=800&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
+    }
+
+    .hero-visual-inner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(196, 82, 58, 0.15) 0%, transparent 40%, rgba(12, 12, 12, 0.8) 100%);
+    }
+
+    /* Featured strip */
+    .featured-strip {
+      padding: 0 48px 120px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .strip-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .strip-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    .strip-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 24px;
+    }
+
+    .strip-card {
+      position: relative;
+      background: var(--bg-surface);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .strip-card-main {
+      aspect-ratio: 16/10;
+    }
+
+    .strip-card-sub {
+      aspect-ratio: 1/1;
+    }
+
+    .strip-card-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .strip-card-main .strip-card-inner {
+      background-image: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1200&q=80'), linear-gradient(160deg, rgba(20,20,20,0.7) 0%, rgba(10,10,10,0.9) 100%);
+      background-blend-mode: overlay;
+    }
+
+    .strip-card:nth-child(2) .strip-card-inner {
+      background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .strip-card:nth-child(3) .strip-card-inner {
+      background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .strip-card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      background: linear-gradient(to top, rgba(12, 12, 12, 0.95) 0%, transparent 100%);
+    }
+
+    .strip-card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-rust);
+      margin-bottom: 8px;
+    }
+
+    .strip-card-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-warm);
+      line-height: 1.3;
+    }
+
+    /* Section divider */
+    .section {
+      padding: 0 48px 120px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 48px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-warm);
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--accent-rust), var(--accent-gold));
+      border-radius: 2px;
+    }
+
+    .section-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .section-link:hover {
+      color: var(--accent-rust);
+    }
+
+    /* Film list - editorial style */
+    .film-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .film-row {
+      display: grid;
+      grid-template-columns: 80px 120px 1fr 200px 120px;
+      gap: 32px;
+      align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: background 200ms ease;
+    }
+
+    .film-row:hover {
+      background: var(--bg-surface);
+      margin: 0 -24px;
+      padding: 24px;
+      border-radius: 4px;
+    }
+
+    .film-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      position: relative;
+    }
+
+    .film-index::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      transition: all 200ms ease;
+    }
+
+    .film-row:hover .film-index::after {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-rust);
+    }
+
+    .film-thumb {
+      width: 120px;
+      height: 68px;
+      background: var(--bg-elevated);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .film-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.6;
+    }
+
+    .film-row:nth-child(1) .film-thumb::before {
+      background-image: url('https://images.unsplash.com/photo-1509281373149-e957c6296406?w=300&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+
+    .film-row:nth-child(2) .film-thumb::before {
+      background-image: url('https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?w=300&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+
+    .film-row:nth-child(3) .film-thumb::before {
+      background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=300&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+
+    .film-row:nth-child(4) .film-thumb::before {
+      background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=300&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+
+    .film-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .film-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-warm);
+    }
+
+    .film-director {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .film-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .film-duration {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: right;
+    }
+
+    /* Curator picks */
+    .curator {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .curator-image {
+      aspect-ratio: 4/5;
+      background: var(--bg-surface);
+      border-radius: 4px;
+      background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .curator-content {
+      padding-top: 32px;
+    }
+
+    .curator-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 24px;
+    }
+
+    .curator-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-warm);
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .curator-quote {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-style: italic;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      padding-left: 24px;
+      border-left: 2px solid var(--accent-rust);
+    }
+
+    .curator-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .curator-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-warm);
+    }
+
+    .curator-role {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Genre tags */
+    .genre-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .genre-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 20px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 200ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .genre-tag::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-rust) 0%, var(--accent-gold) 100%);
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
+    .genre-tag span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .genre-tag:hover {
+      color: var(--text-warm);
+      border-color: transparent;
+    }
+
+    .genre-tag:hover::before {
+      opacity: 0.15;
+    }
+
+    /* Film Stills Gallery */
+    .stills {
+      padding: 0 48px 120px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .stills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 200px);
+      gap: 16px;
+    }
+
+    .still-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .still-item:first-child {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .still-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 400ms ease;
+    }
+
+    .still-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .still-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(12, 12, 12, 0.8) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 300ms ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+    }
+
+    .still-item:hover .still-overlay {
+      opacity: 1;
+    }
+
+    .still-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--text-warm);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 120px;
+      padding: 80px 48px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 64px;
+    }
+
+    .footer-brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-warm);
+      margin-bottom: 16px;
+    }
+
+    .footer-brand span {
+      color: var(--accent-rust);
+    }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .footer-column h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .footer-column a:hover {
+      color: var(--text-warm);
+    }
+
+    .footer-bottom {
+      max-width: 1600px;
+      margin: 64px auto 0;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero-visual {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .strip-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .strip-card-main {
+        grid-column: span 2;
+        aspect-ratio: 21/9;
+      }
+
+      .film-row {
+        grid-template-columns: 60px 80px 1fr;
+      }
+
+      .film-desc, .film-duration {
+        display: none;
+      }
+
+      .curator {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .curator-image {
+        max-width: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 16px 24px;
+      }
+
+      .header-nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 120px 24px 64px;
+      }
+
+      .hero-title {
+        font-size: 40px;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .strip-strip {
+        padding: 0 24px 80px;
+      }
+
+      .strip-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .strip-card-main {
+        grid-column: span 1;
+        aspect-ratio: 16/10;
+      }
+
+      .section {
+        padding: 0 24px 80px;
+      }
+
+      .film-row {
+        grid-template-columns: 40px 1fr;
+        gap: 16px;
+      }
+
+      .film-thumb {
+        display: none;
+      }
+
+      .stills-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+      }
+
+      .still-item:first-child {
+        grid-column: span 2;
+        grid-row: span 1;
+        aspect-ratio: 16/9;
+      }
+
+      .still-item:not(:first-child) {
+        aspect-ratio: 1/1;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo">OBSCURA<span>.</span></a>
+    <nav class="header-nav">
+      <a href="#">发现</a>
+      <a href="#">导演</a>
+      <a href="#">专题</a>
+      <a href="#">关于</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-issue">Vol. 12 — 2026年春季</p>
+      <h1 class="hero-title">冰川之下<br><em>寂静的危机</em></h1>
+      <p class="hero-desc">跟随冰川学家珍娜·麦克法兰深入北极圈，经历18个月的极地生活，记录气候变化的真实代价——不是数字，是正在消失的世界。</p>
+      <div class="hero-meta">
+        <span>珍娜·麦克法兰</span>
+        <span>112 分钟</span>
+        <span>2026</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-inner"></div>
+    </div>
+  </section>
+
+  <!-- Featured Strip -->
+  <section class="featured-strip">
+    <p class="strip-label">本周精选</p>
+    <div class="strip-grid">
+      <div class="strip-card strip-card-main">
+        <div class="strip-card-inner"></div>
+        <div class="strip-card-overlay">
+          <p class="strip-card-tag">自然科学</p>
+          <h3 class="strip-card-title">最后的流冰：北极熊的家园</h3>
+        </div>
+      </div>
+      <div class="strip-card strip-card-sub">
+        <div class="strip-card-inner"></div>
+        <div class="strip-card-overlay">
+          <p class="strip-card-tag">社会观察</p>
+          <h3 class="strip-card-title">工厂女孩</h3>
+        </div>
+      </div>
+      <div class="strip-card strip-card-sub">
+        <div class="strip-card-inner"></div>
+        <div class="strip-card-overlay">
+          <p class="strip-card-tag">历史</p>
+          <h3 class="strip-card-title">敦煌：信仰的角落</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Film List -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">正在热映</h2>
+      <a href="#" class="section-link">查看全部 →</a>
+    </div>
+    <div class="film-list">
+      <div class="film-row">
+        <span class="film-index">01</span>
+        <div class="film-thumb">海报</div>
+        <div class="film-info">
+          <h4 class="film-title">噪音之下：中国工厂青年的声音</h4>
+          <p class="film-director">周远导演</p>
+        </div>
+        <p class="film-desc">电子厂流水线上的工人乐队，用音乐对抗异化的青春。</p>
+        <span class="film-duration">94 MIN</span>
+      </div>
+      <div class="film-row">
+        <span class="film-index">02</span>
+        <div class="film-thumb">海报</div>
+        <div class="film-info">
+          <h4 class="film-title">最后一班地铁</h4>
+          <p class="film-director">林可欣导演</p>
+        </div>
+        <p class="film-desc">凌晨时分，城市夜班工作者的生存群像。</p>
+        <span class="film-duration">78 MIN</span>
+      </div>
+      <div class="film-row">
+        <span class="film-index">03</span>
+        <div class="film-thumb">海报</div>
+        <div class="film-info">
+          <h4 class="film-title">网瘾</h4>
+          <p class="film-director">杨森导演</p>
+        </div>
+        <p class="film-desc">农村留守儿童的屏幕依赖，谁之过？</p>
+        <span class="film-duration">105 MIN</span>
+      </div>
+      <div class="film-row">
+        <span class="film-index">04</span>
+        <div class="film-thumb">海报</div>
+        <div class="film-info">
+          <h4 class="film-title">苏州河</h4>
+          <p class="film-director">陈雨导演</p>
+        </div>
+        <p class="film-desc">工业废墟中，最后的捕鱼人与他的鸬鹚。</p>
+        <span class="film-duration">88 MIN</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curator -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">策展人推荐</h2>
+      <a href="#" class="section-link">更多推荐 →</a>
+    </div>
+    <div class="curator">
+      <div class="curator-image"></div>
+      <div class="curator-content">
+        <p class="curator-label">本期策展人</p>
+        <h3 class="curator-title">《寻找小脚》观影指南</h3>
+        <p class="curator-quote">"这是一部需要耐心去接近的电影，它不提供答案，它只是邀请你进入那个被遗忘的世界。"</p>
+        <p class="curator-text">人类学纪录片导演王小鲁历时三年，深入云南山区，记录纳西族最后一个会说"小脚"这种古老方言的老人。语言学家预测，这种方言将在十年内彻底消失。</p>
+        <p class="curator-name">李静</p>
+        <p class="curator-role">资深影评人 / OBSCURA 特邀策展人</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Genres -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">探索题材</h2>
+    </div>
+    <div class="genre-row">
+      <span class="genre-tag"><span>社会观察</span></span>
+      <span class="genre-tag"><span>人物特写</span></span>
+      <span class="genre-tag"><span>历史档案</span></span>
+      <span class="genre-tag"><span>自然地理</span></span>
+      <span class="genre-tag"><span>科技未来</span></span>
+      <span class="genre-tag"><span>艺术创作</span></span>
+      <span class="genre-tag"><span>音乐现场</span></span>
+      <span class="genre-tag"><span>美食旅行</span></span>
+    </div>
+  </section>
+
+  <!-- Film Stills -->
+  <section class="stills">
+    <div class="section-header">
+      <h2 class="section-title">精选剧照</h2>
+      <a href="#" class="section-link">更多剧照 →</a>
+    </div>
+    <div class="stills-grid">
+      <div class="still-item">
+        <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80" alt="纪录片剧照">
+        <div class="still-overlay">
+          <span class="still-title">《冰川之下》拍摄现场</span>
+        </div>
+      </div>
+      <div class="still-item">
+        <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=80" alt="纪录片剧照">
+        <div class="still-overlay">
+          <span class="still-title">极地风光</span>
+        </div>
+      </div>
+      <div class="still-item">
+        <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&q=80" alt="纪录片剧照">
+        <div class="still-overlay">
+          <span class="still-title">自然纪录</span>
+        </div>
+      </div>
+      <div class="still-item">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&q=80" alt="纪录片剧照">
+        <div class="still-overlay">
+          <span class="still-title">科技主题</span>
+        </div>
+      </div>
+      <div class="still-item">
+        <img src="https://images.unsplash.com/photo-1533537841959-913856ac2273?w=400&q=80" alt="纪录片剧照">
+        <div class="still-overlay">
+          <span class="still-title">人物特写</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h3 class="footer-brand">OBSCURA<span>.</span></h3>
+        <p class="footer-tagline">OBSCURA 是一个致力于呈现优质纪录片的内容平台。我们相信，每一部纪录片都是一个通往真实世界的入口。</p>
+      </div>
+      <div class="footer-column">
+        <h4>内容</h4>
+        <ul>
+          <li><a href="#">正在热映</a></li>
+          <li><a href="#">精选片单</a></li>
+          <li><a href="#">策展专题</a></li>
+          <li><a href="#">导演专区</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>关于</h4>
+        <ul>
+          <li><a href="#">关于我们</a></li>
+          <li><a href="#">联系方式</a></li>
+          <li><a href="#">版权声明</a></li>
+          <li><a href="#">隐私政策</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>关注</h4>
+        <ul>
+          <li><a href="#">微信公众号</a></li>
+          <li><a href="#">微博</a></li>
+          <li><a href="#">Bilibili</a></li>
+          <li><a href="#">豆瓣</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OBSCURA. All rights reserved.</span>
+      <span>Documentary Streaming Platform</span>
+    </div>
+  </footer>
+</body>
+</html>
