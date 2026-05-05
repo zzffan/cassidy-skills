@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"E:/code/real-projects/cassidy-skills/skills/fiction-writer/references\")",
+      "Bash(mkdir -p \"E:/code/real-projects/cassidy-skills/skills/fiction-writer/scripts\")",
+      "WebFetch(domain:github.com)",
+      "Bash(git clone:*)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/guides/chapter-guide.md /tmp/chinese-novelist-improved/skills/chinese-novelist/references/guides/chapter-guide.md)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/guides/hook-techniques.md /tmp/chinese-novelist-improved/skills/chinese-novelist/references/guides/hook-techniques.md)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/guides/dialogue-writing.md /tmp/chinese-novelist-improved/skills/chinese-novelist/references/guides/dialogue-writing.md)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/guides/character-building.md /tmp/chinese-novelist-improved/skills/chinese-novelist/references/guides/character-building.md)",
+      "Bash(where python:*)",
+      "Bash(cp -r /tmp/chinese-novelist-skill/references/guides/* /tmp/skill-build/skills/super-novelist/references/guides/)",
+      "Bash(cp -r /tmp/chinese-novelist-skill/references/flows/* /tmp/skill-build/skills/super-novelist/references/flows/)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/guides/*.md E:/code/real-projects/cassidy-skills/skills/super-novelist/references/guides/)",
+      "Bash(cp /tmp/chinese-novelist-skill/references/flows/*.md E:/code/real-projects/cassidy-skills/skills/super-novelist/references/flows/)",
+      "Bash(cp /tmp/chinese-novelist-skill/scripts/*.py E:/code/real-projects/cassidy-skills/skills/super-novelist/scripts/)",
+      "Bash(chardet E:/code/real-projects/cassidy-skills/skills/super-novelist/SKILL.md)"
+    ]
+  }
+}

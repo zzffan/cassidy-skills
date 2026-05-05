@@ -56,6 +56,39 @@ Or use natural language:
 
 ---
 
+## super-novelist
+
+Write novels in Chinese or English with anti-AI writing principles.
+
+### Usage
+
+```
+/super-novelist
+```
+
+Or use natural language:
+- "写一个悬疑小说"
+- "创作一个奇幻故事"
+- "写小说"
+- "帮我写一章"
+
+### Features
+
+- **Bilingual** - Chinese and English novels
+- **All genres** - Mystery, romance, sci-fi, fantasy, historical, etc.
+- **Any length** - Short (1-3 chapters), medium (5-15), long (20-50)
+- **Anti-AI writing** - No clichés, no clichés, natural dialogue
+- **Character consistency** - No role drift, each character has full emotions
+- **Occasional profanity** - Realistic expression when appropriate
+
+### Installation
+
+1. Download `skills/super-novelist/super-novelist.skill`
+2. Place it in `~/.claude/skills/` directory
+3. Restart Claude Code
+
+---
+
 ## docs/frontend-aesthetics
 
 Design philosophy and guidelines for frontend development:

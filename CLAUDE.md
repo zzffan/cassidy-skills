@@ -6,6 +6,7 @@
 
 cassidy-skills 是一个个人技能/工具仓库，包含：
 - **design-generator** - 前端界面生成 skill，支持品牌风格 + 自定义设计
+- **super-novelist** - 小说创作 skill，支持中英双语，全题材，长中短篇
 - **docs/** - 设计规范和参考文档
 - **skills/** - 可分发的 .skill 安装包
 
@@ -24,10 +25,15 @@ cassidy-skills/
 │   │   └── agents.md   # 前端设计规范（反 AI 味原则）
 │   └── designs/        # 设计系统参考文档（冗余，与 skills 重复）
 ├── skills/
-│   └── design-generator/
-│       ├── design-generator.skill  # 可分发安装包
+│   ├── design-generator/
+│   │   ├── design-generator.skill  # 可分发安装包
+│   │   ├── SKILL.md                # skill 核心定义
+│   │   └── references/             # 品牌设计系统参考（66+）
+│   └── super-novelist/
+│       ├── super-novelist.skill    # 可分发安装包
 │       ├── SKILL.md                # skill 核心定义
-│       └── references/             # 品牌设计系统参考（66+）
+│       ├── scripts/                # 字数检查等脚本
+│       └── references/             # 写作指南和流程文档
 ```
 
 ## 开发说明
@@ -48,3 +54,4 @@ cassidy-skills/
 
 - `/design-generator` - 调用设计生成 skill
 - 触发词："帮我做个页面"、"用 XX 风格"等
+- `/super-novelist` - 调用小说创作 skill（需先安装）
